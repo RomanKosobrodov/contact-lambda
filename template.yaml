@@ -1,0 +1,130 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: URL Lambda for sending emails from contact forms on static websites
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: "Website"
+        Parameters:
+          - HostURL
+          - RedirectPage
+          - ErrorPage
+      - Label:
+          default: "Email Addresses"
+        Parameters:
+          - SenderEmail
+          - RecipientEmail
+          - CCEmail
+          - BCCEmail
+    ParameterLabels:
+      HostURL:
+        default: "Host URL"
+      RedirectPage:
+        default: "Redirect URL"
+      ErrorPage:
+        default: "Error Page URL"
+      SenderEmail:
+        default: "Sender Email"
+      RecipientEmail:
+        default: "Receipient Email"
+      CCEmail:
+        default: "CC"
+      BCCEmail:
+        default: "BCC"
+
+Parameters:
+  HostURL:
+    Type: String
+    Description: >
+      Website URL (including the protocol), e.g. https://example.com
+  RedirectPage:
+    Type: String
+    Description: >
+      The page on the website where the user is redirected after sending the form.
+    Default: "thankyou.html"
+  ErrorPage:
+    Type: String
+    Description: >
+      The user is redirected to this page when an error occurs while sending the form.
+    Default: "error.html"
+  SenderEmail:
+    Type: String
+    Description: >
+      Email address verified by AWS SES for sending emails. The operation will fail if the email address is not valid.
+  RecipientEmail:
+    Type: String
+    Description: >
+      Email address to which the form is sent.
+  CCEmail:
+    Type: String
+    Description: >
+      (Optional) Email address to which a "carbon copy" of the form will be sent.
+    Default: ""
+  BCCEmail:
+    Type: String
+    Description: >
+      (Optional) Email address to which a "blind carbon copy" of the form will be sent.
+    Default: ""
+
+Resources:
+  SendMailFunctionRole:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: LambdaFunctionRoleWithSES
+      Path: "/"
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AllowLambdaServiceToAssumeRole"
+            Effect: "Allow"
+            Action:
+              - "sts:AssumeRole"
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+      Policies:
+        - PolicyName: AllowSendingEmail
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: "SendEmails"
+                Effect: "Allow"
+                Action:
+                  - "ses:SendEmail"
+                Resource:
+                  - "*"
+
+  SendMailFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Role: !GetAtt SendMailFunctionRole.Arn
+      Runtime: python3.9
+      CodeUri: src/
+      Handler: app.handler
+      Timeout: 10
+      AutoPublishAlias: live
+      Environment:
+        Variables:
+          HostURL: !Sub "${HostURL}"
+          RedirectPage: !Sub "${RedirectPage}"
+          ErrorPage: !Sub "${ErrorPage}"
+          SenderEmail: !Sub "${SenderEmail}"
+          RecipientEmail: !Sub "${RecipientEmail}"
+          CCEmail: !Sub "${CCEmail}"
+          BCCEmail: !Sub "${BCCEmail}"
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowMethods:
+            - "POST"
+          AllowOrigins:
+            - !Sub "${HostURL}"
+
+Outputs:
+  Endpoint:
+    Description: "Lambda Function URL Endpoint"
+    Value: !GetAtt SendMailFunctionUrl.FunctionUrl

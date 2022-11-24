@@ -1,0 +1,12 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "contact-form-lambda-01"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-5o4w3yiq87bz"
+s3_prefix = "contact-form-lambda-01"
+region = "ap-southeast-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM CAPABILITY_NAMED_IAM"
+parameter_overrides = "HostURL=\"*\" RedirectPage=\"thankyou.html\" ErrorPage=\"error.html\" SenderEmail=\"no-reply@example.com\" RecipientEmail=\"info@example.com\" CCEmail=\"\" BCCEmail=\"\""
+image_repositories = []
