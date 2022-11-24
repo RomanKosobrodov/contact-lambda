@@ -32,7 +32,7 @@ def handler(event, context):
         if "sender" in params and "email" in params and "message" in params:
             sender = params["sender"]
             email = params["email"]
-            content = f"{sender} sent the following message:\n'
+            content = f"{sender} sent the following message:\n"
             message = {
                 "Subject": {
                     "Data": f"{sender} sent a message from {HOST_URL}",
