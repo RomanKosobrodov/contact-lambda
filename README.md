@@ -14,7 +14,7 @@ Obviously, you need an AWS account with sufficient permissions to create resourc
 
 ## Deployment
 
-You can launch the template by following [this link](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=contact-lambda&templateURL=https://templates-kosobrodov-net.s3.amazonaws.com/contact-url-lambda.yaml).
+You can launch the template by following [this link](https://console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/new?stackName=contact-lambda&templateURL=https://templates-kosobrodov-net.s3.amazonaws.com/contact-lambda/template.yaml).
 
 Alternatively, clone the repository, install [SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html) if you don't have it already, check that you have sufficient permissions to create the template, and run the following commands:
 
