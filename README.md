@@ -4,7 +4,7 @@ URL Lambda for sending contact forms from static websites
 
 ## What it does
 
-If you host a static website on AWS you can use this lambda function to send contact information forms to your chosen email. This lambda function uses [AWS Simple Email Service](https://ap-southeast-2.console.aws.amazon.com/ses/home?region=ap-southeast-2#/homepage), which is much cheaper compared to contact form services available from other providers.
+If you host a static website on AWS you can use this lambda function to send contact information forms to your chosen email. This lambda function uses [AWS Simple Email Service](https://aws.amazon.com/ses/), which is much cheaper compared to contact form services available from other providers.
 
 This repository contains the source code and a Serverless Application Model (SAM) template for deploying this lambda function.
 
@@ -55,6 +55,10 @@ An example of the contact form is included in this repository. Please update the
 ```
 
 This is the only configurable parameter that needs to be modified before you are ready to use the form.
+
+## Implementation Details
+
+This [blog post](http://localhost:1313/posts/url-lambda-for-forms/) provides further implementation details including receiving and parsing form data.
 
 ## Issues and feedback
 
