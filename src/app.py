@@ -1,13 +1,13 @@
 import boto3
 import os
 import base64
+import json
 from urllib.parse import urlparse, parse_qs
 
 error = None
 
 try:
     ses = boto3.client("ses")
-    HOST_URL = os.environ["HostURL"]
     REDIRECT_PAGE = os.environ["RedirectPage"]
     ERROR_PAGE = os.environ["ErrorPage"]
     SENDER_EMAIL = os.environ["SenderEmail"]
@@ -28,11 +28,19 @@ CHARSET = "UTF-8"
 
 
 def handler(event, context):
+
+    if "origin" not in event["headers"]:
+        return {
+            "statusCode": 200
+        }
+
+    origin = event["headers"]["origin"] 
+
     if error is not None:
         return {
             "statusCode": 301,
             "headers": {
-                "Location": f"{HOST_URL}/{ERROR_PAGE}"
+                "Location": f"{origin}/{ERROR_PAGE}"
             },
         }
 
@@ -44,10 +52,10 @@ def handler(event, context):
             sender = params["sender"][0]
             email = params["email"][0]
             text = params["message"][0]
-            content = f"{sender} sent the following message:\n" + text
+            content = f"{sender} sent the following message:\n\n" + text
             message = {
                 "Subject": {
-                    "Data": f"{sender} sent a message from {HOST_URL}",
+                    "Data": f"{sender} sent a message from {origin}",
                     "Charset": CHARSET
                 },
                 "Body": {
@@ -69,14 +77,14 @@ def handler(event, context):
                 return {
                     "statusCode": 301,
                     "headers": {
-                        "Location": f"{HOST_URL}/{ERROR_PAGE}"    
+                        "Location": f"{origin}/{ERROR_PAGE}"    
                     }
                 }                 
 
             return {
                 "statusCode": 301,
                 "headers": {
-                    "Location": f"{HOST_URL}/{REDIRECT_PAGE}"    
+                    "Location": f"{origin}/{REDIRECT_PAGE}"    
                 }
             } 
 
@@ -84,7 +92,7 @@ def handler(event, context):
     return {
         "statusCode": 301,
         "headers": {
-            "Location": f"{HOST_URL}/{ERROR_PAGE}"    
+            "Location": f"{origin}/{ERROR_PAGE}"    
         }
     }                
 

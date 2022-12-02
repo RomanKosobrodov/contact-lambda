@@ -8,7 +8,7 @@ Metadata:
       - Label:
           default: "Website"
         Parameters:
-          - HostURL
+          - Origin
           - RedirectPage
           - ErrorPage
       - Label:
@@ -19,8 +19,8 @@ Metadata:
           - CCEmail
           - BCCEmail
     ParameterLabels:
-      HostURL:
-        default: "Host URL"
+      Origin:
+        default: "Origin URL"
       RedirectPage:
         default: "Redirect URL"
       ErrorPage:
@@ -35,10 +35,10 @@ Metadata:
         default: "BCC"
 
 Parameters:
-  HostURL:
+  Origin:
     Type: String
     Description: >
-      Website URL (including the protocol), e.g. https://example.com
+      Website origin URL to include in CORS Allowed Origins, e.g. example.com
   RedirectPage:
     Type: String
     Description: >
@@ -109,7 +109,6 @@ Resources:
       AutoPublishAlias: live
       Environment:
         Variables:
-          HostURL: !Sub "${HostURL}"
           RedirectPage: !Sub "${RedirectPage}"
           ErrorPage: !Sub "${ErrorPage}"
           SenderEmail: !Sub "${SenderEmail}"
@@ -122,7 +121,7 @@ Resources:
           AllowMethods:
             - "POST"
           AllowOrigins:
-            - !Sub "${HostURL}"
+            - !Sub "${Origin}"
 
 Outputs:
   Endpoint:
