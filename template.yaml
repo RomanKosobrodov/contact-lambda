@@ -28,7 +28,7 @@ Metadata:
       SenderEmail:
         default: "Sender Email"
       RecipientEmail:
-        default: "Receipient Email"
+        default: "Recipient Email"
       CCEmail:
         default: "CC"
       BCCEmail:
@@ -72,7 +72,7 @@ Resources:
   SendMailFunctionRole:
     Type: "AWS::IAM::Role"
     Properties:
-      RoleName: LambdaFunctionRoleWithSES
+      RoleName: !Sub "${AWS::StackName}-LambdaFunctionRoleWithSES"
       Path: "/"
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
